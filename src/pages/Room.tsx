@@ -1,5 +1,6 @@
 import { FormEvent, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 import logoImg from '../assets/images/logo.svg';
 
@@ -31,6 +32,7 @@ export function Room() {
     event.preventDefault();
    
     if (newQuestion.trim() === "") {
+      toast.warning("😊 Escreva sua pergunta!");
       return;
     }
 
@@ -49,7 +51,8 @@ export function Room() {
     }
 
     await database.ref(`rooms/${roomId}/questions`).push(question);
-  
+    
+    toast.success("🎉 Pergunta feita com sucesso!");
     setNewQuestion('');
   }
 

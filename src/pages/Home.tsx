@@ -1,6 +1,8 @@
 import { FormEvent, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
+import { toast } from 'react-toastify';
+
 import illustrationImg from '../assets/images/illustration.svg';
 import logoImg from '../assets/images/logo.svg';
 import googleIconImg from '../assets/images/google-icon.svg';
@@ -29,18 +31,19 @@ export function Home() {
     event.preventDefault();
   
     if(roomCode.trim() === "") {
+      toast.info("😩 Escolha um nome para sua Sala.");
       return;
     }
 
     const roomRef = await database.ref(`rooms/${roomCode}`).get();
 
     if (!roomRef.exists()) {
-      alert('Room does not exists');
+      toast.error("😭 Este Código não existe.");
       return;
     }
 
     if (roomRef.val().endedAt) {
-      alert('Room already closed.');
+      toast.warning("😱 Sala já fechada.");
       return;
     }
 

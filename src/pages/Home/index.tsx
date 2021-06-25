@@ -1,22 +1,28 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { toast } from 'react-toastify';
 
-import illustrationImg from '../assets/images/illustration.svg';
-import logoImg from '../assets/images/logo.svg';
-import googleIconImg from '../assets/images/google-icon.svg';
+import illustrationImg from '../../assets/images/illustration.svg';
+import logoImg from '../../assets/images/logo.svg';
+import logoDarkImg from '../../assets/images/logoDark.svg';
+import googleIconImg from '../../assets/images/google-icon.svg';
 
-import { Button } from '../components/Button';
-import { useAuth } from '../hooks/useAuth';
-import { database } from '../services/firebase';
+import { useAuth } from '../../hooks/useAuth';
+import { useMyTheme } from '../../hooks/useMyTheme';
 
-import '../styles/auth.scss';
+import { Button } from '../../components/Button';
+
+import { database } from '../../services/firebase';
+
+import { Auth } from './styles';
 
 export function Home() {
   const history = useHistory();
   const { user, signInWithGoogle } = useAuth();
   const [roomCode, setRoomCode] = useState('');
+
+  const { title } = useMyTheme();
 
   async function handleCreateRoom() {
     if (!user) {
@@ -26,12 +32,11 @@ export function Home() {
     history.push('/rooms/new');
   }
 
-
   async function handleJoinRoom(event: FormEvent) {
     event.preventDefault();
   
     if(roomCode.trim() === "") {
-      toast.info("😩 Escolha um nome para sua Sala.");
+      toast.info("😩 Digite um Código.");
       return;
     }
 
@@ -51,15 +56,17 @@ export function Home() {
   }
 
   return (
-    <div id="page-auth">
+    <Auth>
       <aside>
-        <img src={illustrationImg} alt="Ilustração simbolizando perguntas e respostas" />        
+        <img src={illustrationImg} alt="Ilustração simbolizando perguntas e respostas" />
         <strong>Crie salas de Q&amp;A ao-vivo</strong>
         <p>Tire as dúvidas de sua audiência em tempo-real</p>
       </aside>
       <main>
+
         <div className="main-content">
-          <img src={logoImg} alt="Letmeask" />
+          { title === "dark" ? (<img src={logoDarkImg} alt="Letmeask" />) : (<img src={logoImg} alt="Letmeask" />) }
+
           <button onClick={handleCreateRoom} className="create-room">
             <img src={googleIconImg} alt="Logo do Google" />
             Crie sua sala com o Google
@@ -78,6 +85,6 @@ export function Home() {
           </form>
         </div>
       </main>
-    </div>
+    </Auth>
   );
 }

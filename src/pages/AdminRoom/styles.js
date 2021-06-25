@@ -1,4 +1,6 @@
-#page-room {
+import styled from 'styled-components';
+
+export const PageRoom = styled.div`
   header {
     padding: 24px;
     border-bottom: 1px solid #e2e2e2;
@@ -40,7 +42,7 @@
       h1 {
         font-family: 'Poppins', sans-serif;
         font-size: 24px;
-        color: #29292e;
+        color: ${props => props.theme.colors.text};
       }
 
       span {
@@ -120,4 +122,4 @@
       margin-top: 32px;
     }
   }
-}
+`;

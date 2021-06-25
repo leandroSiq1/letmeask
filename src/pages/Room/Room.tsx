@@ -1,32 +1,51 @@
-import { FormEvent, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { FormEvent, useState, useEffect } from 'react';
+import { useParams, useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import logoImg from '../assets/images/logo.svg';
+import logoImg from '../../assets/images/logo.svg';
+import logoDarkImg from '../../assets/images/logoDark.svg';
 
-import { Button } from '../components/Button';
-import { RoomCode } from '../components/RoomCode';
-import { Question } from '../components/Question';
+import { Button } from '../../components/Button';
+import { RoomCode } from '../../components/RoomCode';
+import { Question } from '../../components/Question';
 
-import { useAuth } from '../hooks/useAuth';
-import { useRoom } from '../hooks/useRoom';
+import { useAuth } from '../../hooks/useAuth';
+import { useRoom } from '../../hooks/useRoom';
+import { useMyTheme } from '../../hooks/useMyTheme';
 
-import { database } from '../services/firebase';
+import { database } from '../../services/firebase';
 
-import '../styles/room.scss';
+import { PageRoom } from './styles';
 
 type RoomParams = {
   id: string;
 }
 
 export function Room() {
-  const { user } = useAuth();
+  const { user, signInWithGoogle } = useAuth();
   const params = useParams<RoomParams>();
   const [newQuestion, setNewQuestion] = useState('');
   const roomId = params.id;
 
-
+  const theme = useMyTheme();
+  
   const { title, questions } = useRoom(roomId);
+  const history = useHistory();
+
+  useEffect(() => {
+    validateCodeParams();
+  }, []);
+
+  async function validateCodeParams() {
+    const value = await database.ref(`rooms/${roomId}`).get();
+  
+    if (value.val().endedAt) {
+      history.push('/');
+
+      toast.warning("😱 Sala já fechada.");
+      return;
+    }
+  }
 
   async function handleSendQuestion(event: FormEvent) {
     event.preventDefault();
@@ -66,12 +85,11 @@ export function Room() {
     }
   }
 
-
   return (
-    <div id="page-room">
+    <PageRoom>
       <header>
         <div className="content">
-          <img src={logoImg} alt="" />
+          { theme.title === "dark" ? (<img src={logoDarkImg} alt="Letmeask" />) : (<img src={logoImg} alt="Letmeask" />) }
           <RoomCode code={roomId} />
         </div>
       </header>
@@ -96,7 +114,7 @@ export function Room() {
                 <span>{user.name}</span>
               </div>
             ) : (
-              <span>Para enviar uma pergunta, <button>faça seu login</button>.</span>
+              <span>Para enviar uma pergunta, <button type="button" onClick={signInWithGoogle}>faça seu login</button>.</span>
             ) }
             <Button type="submit" disabled={!user}>Enviar pergunta</Button>
           </div>
@@ -126,6 +144,6 @@ export function Room() {
           }) }
         </div>
       </main>
-    </div>
+    </PageRoom>
   );
 }

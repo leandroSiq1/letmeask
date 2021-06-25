@@ -1,17 +1,19 @@
 import { useHistory, useParams } from 'react-router-dom';
 
-import logoImg from '../assets/images/logo.svg';
-import deleteImg from '../assets/images/delete.svg';
+import logoImg from '../../assets/images/logo.svg';
+import logoDarkImg from '../../assets/images/logoDark.svg';
+import deleteImg from '../../assets/images/delete.svg';
 
-import { Button } from '../components/Button';
-import { RoomCode } from '../components/RoomCode';
-import { Question } from '../components/Question';
+import { Button } from '../../components/Button';
+import { RoomCode } from '../../components/RoomCode';
+import { Question } from '../../components/Question';
 
 // import { useAuth } from '../hooks/useAuth';
-import { useRoom } from '../hooks/useRoom';
-import { database } from '../services/firebase';
+import { useRoom } from '../../hooks/useRoom';
+import { useMyTheme } from '../../hooks/useMyTheme';
+import { database } from '../../services/firebase';
 
-import '../styles/room.scss';
+import { PageRoom } from './styles';
 
 type RoomParams = {
   id: string;
@@ -23,6 +25,7 @@ export function AdminRoom() {
   const params = useParams<RoomParams>();
   const roomId = params.id;
 
+  const theme = useMyTheme();
   const { title, questions } = useRoom(roomId);
 
   async function handleEndRoom() {
@@ -40,10 +43,10 @@ export function AdminRoom() {
   }
 
   return (
-    <div id="page-room">
+    <PageRoom>
       <header>
         <div className="content">
-          <img src={logoImg} alt="" />
+          { theme.title === "dark" ? (<img src={logoDarkImg} alt="Letmeask" />) : (<img src={logoImg} alt="Letmeask" />) }
           <div className="">
             <RoomCode code={roomId} />
             <Button isOutlined onClick={handleEndRoom}>Encerrar sala</Button>
@@ -76,6 +79,6 @@ export function AdminRoom() {
           }) }
         </div>
       </main>
-    </div>
+    </PageRoom>
   );
 }

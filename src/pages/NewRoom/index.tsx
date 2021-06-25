@@ -1,18 +1,21 @@
 import { Link, useHistory } from 'react-router-dom';
 import { FormEvent, useState } from 'react';
 
-import illustrationImg from '../assets/images/illustration.svg';
-import logoImg from '../assets/images/logo.svg';
+import illustrationImg from '../../assets/images/illustration.svg';
+import logoImg from '../../assets/images/logo.svg';
+import logoDarkImg from '../../assets/images/logoDark.svg';
 
-import { Button } from '../components/Button';
-import { useAuth } from '../hooks/useAuth';
+import { Button } from '../../components/Button';
+import { useAuth } from '../../hooks/useAuth';
+import { useMyTheme } from '../../hooks/useMyTheme';
 
-import { database } from '../services/firebase';
+import { database } from '../../services/firebase';
 
-import '../styles/auth.scss';
+import { Auth } from './styles';
 
 export function NewRoom() {
   const { user } = useAuth();
+  const { title } = useMyTheme();  
 
   const history = useHistory();
   const [newRoom, setNewRoom] = useState('');
@@ -34,9 +37,8 @@ export function NewRoom() {
     history.push(`/rooms/${firebaseRoom.key}`);
   }
 
-
   return (
-    <div id="page-auth">
+    <Auth>
       <aside>
         <img src={illustrationImg} alt="Ilustração simbolizando perguntas e respostas" />        
         <strong>Crie salas de Q&amp;A ao-vivo</strong>
@@ -44,7 +46,7 @@ export function NewRoom() {
       </aside>
       <main>
         <div className="main-content">
-          <img src={logoImg} alt="Letmeask" />
+          { title === "light" ? <img src={logoImg} alt="Letmeask" /> : <img src={logoDarkImg} alt="Letmeask" /> }
           <h2>Cria uma nova sala</h2>
           <form onSubmit={handleCreateRoom}>
             <input 
@@ -63,6 +65,6 @@ export function NewRoom() {
           </p>
         </div>
       </main>
-    </div>
+    </Auth>
   );
 }

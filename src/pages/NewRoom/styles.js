@@ -1,4 +1,6 @@
-#page-auth {
+import styled from 'styled-components';
+
+export const Auth = styled.div`
   height: 100vh;
 
   display: flex;
@@ -62,6 +64,7 @@
       font-size: 24px;
       margin: 64px 0 24px;
       font-family: 'Poppins', sans-serif;
+      color: ${props => props.theme.colors.primary};
     }
     
     > form {
@@ -146,4 +149,4 @@
       margin-left: 16px;
     }
   }
-}
+`;
